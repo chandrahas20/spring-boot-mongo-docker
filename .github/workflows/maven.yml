@@ -18,10 +18,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-
-    - name: Build with Maven
-      run: mvn clean install
-      
+        
     - name: Prepare SSH
       run: |
         mkdir -p ~/.ssh
@@ -37,6 +34,25 @@ jobs:
         chmod 600 key.pem
         eval $(ssh-agent -s)
         ssh-add key.pem
+        
+    - name: Build with Maven
+      run: mvn clean install
+      
+    # - name: Prepare SSH
+    #   run: |
+    #     mkdir -p ~/.ssh
+    #     touch ~/.ssh/known_hosts
+    #     chmod 600 ~/.ssh/known_hosts
+    #     ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
+
+    # - name: Add SSH Key
+    #   env:
+    #     EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+    #   run: |
+    #     echo "${EC2_SSH_KEY}" > key.pem
+    #     chmod 600 key.pem
+    #     eval $(ssh-agent -s)
+    #     ssh-add key.pem
         
     - name: Transfer .jar to EC2
       env:
