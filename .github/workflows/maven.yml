@@ -25,13 +25,12 @@ jobs:
       
     - name: Add SSH Key
       env:
-        EC2_SSH_KEY_B64: ${{ secrets.EC2_SSH_KEY_B64 }}
+        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
       run: |
-        echo "${EC2_SSH_KEY_B64}" | base64 --decode > key.pem
+        echo "${EC2_SSH_KEY}" > key.pem
         chmod 600 key.pem
         eval $(ssh-agent -s)
         ssh-add key.pem
-
     - name: Transfer .jar to EC2
       env:
         EC2_HOST: ${{ secrets.EC2_HOST }}
