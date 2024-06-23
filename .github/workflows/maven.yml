@@ -23,13 +23,27 @@ jobs:
 
     - name: Build with Maven
       run: mvn clean install
+      
+    - name: Add SSH Key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
     - name: Transfer .jar to EC2
       env:
-        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY_B64 }}
         EC2_HOST: ${{ secrets.EC2_HOST }}
         EC2_USER: ${{ secrets.EC2_USER }}
-      run: |
-       echo "${EC2_SSH_KEY_B64}" | base64 --decode > key.pem
-        chmod 600 key.pem
-        scp -o StrictHostKeyChecking=no -i key.pem target/*.jar ${EC2_USER}@${EC2_HOST}:/root/123
+      run: scp -o StrictHostKeyChecking=no target/*.jar ${EC2_USER}@${EC2_HOST}:/root/123
+
+
+
+    
+    # - name: Transfer .jar to EC2
+    #   env:
+       
+    #     EC2_HOST: ${{ secrets.EC2_HOST }}
+    #     EC2_USER: ${{ secrets.EC2_USER }}
+    #   run: |
+    #    echo "${EC2_SSH_KEY_B64}" | base64 --decode > key.pem
+    #     chmod 600 key.pem
+    #     scp -o StrictHostKeyChecking=no -i key.pem target/*.jar ${EC2_USER}@${EC2_HOST}:/root/123
