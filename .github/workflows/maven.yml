@@ -25,9 +25,13 @@ jobs:
       run: mvn clean install
       
     - name: Add SSH Key
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+      env:
+        EC2_SSH_KEY_B64: ${{ secrets.EC2_SSH_KEY_B64 }}
+      run: |
+        echo "${EC2_SSH_KEY_B64}" | base64 --decode > key.pem
+        chmod 600 key.pem
+        eval $(ssh-agent -s)
+        ssh-add key.pem
 
     - name: Transfer .jar to EC2
       env:
