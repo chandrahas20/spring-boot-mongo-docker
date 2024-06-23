@@ -26,10 +26,10 @@ jobs:
 
     - name: Transfer .jar to EC2
       env:
-        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY_B64 }}
         EC2_HOST: ${{ secrets.EC2_HOST }}
         EC2_USER: ${{ secrets.EC2_USER }}
       run: |
-       echo "${EC2_SSH_KEY_B64}" | base64 -d > key.pem
+       echo "${EC2_SSH_KEY_B64}" | base64 --decode > key.pem
         chmod 600 key.pem
         scp -o StrictHostKeyChecking=no -i key.pem target/*.jar ${EC2_USER}@${EC2_HOST}:/root/123
